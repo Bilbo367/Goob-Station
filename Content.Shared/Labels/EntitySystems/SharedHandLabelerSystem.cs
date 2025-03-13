@@ -72,9 +72,20 @@ public abstract class SharedHandLabelerSystem : EntitySystem
             result = Loc.GetString("hand-labeler-successfully-removed");
             return;
         }
+
+        if (ContainsSlur(handLabeler.AssignedLabel)) // TBDStation - Filter out slurs here
+        {
+            result = Loc.GetString("hand-labeler-slur-detected");
+            return;
+        }
+
         if (_netManager.IsServer)
             _labelSystem.Label(target, handLabeler.AssignedLabel);
         result = Loc.GetString("hand-labeler-successfully-applied");
+    }
+    public virtual bool ContainsSlur(string label) // TBDStation
+    {
+        return false;
     }
 
     private void OnUtilityVerb(EntityUid uid, HandLabelerComponent handLabeler, GetVerbsEvent<UtilityVerb> args)

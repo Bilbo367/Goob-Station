@@ -7,6 +7,7 @@ using Content.Shared.Labels.EntitySystems;
 using Content.Shared.Paper;
 using JetBrains.Annotations;
 using Robust.Shared.Containers;
+using Content.Server._TBDStation.SlurFilter; // TBDStation
 
 namespace Content.Server.Labels
 {
@@ -18,6 +19,7 @@ namespace Content.Server.Labels
     {
         [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
         [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+        [Dependency] private readonly SlurFilterManager _slurFilterMan = default!; // TBDStation
 
         public const string ContainerName = "paper_label";
 
@@ -43,6 +45,11 @@ namespace Content.Server.Labels
         {
             if (!Resolve(uid, ref label, false))
                 label = EnsureComp<LabelComponent>(uid);
+
+            if (text == null || _slurFilterMan.ContainsSlur(text)) // TBDStation
+            {
+                return;
+            }
 
             label.CurrentLabel = text;
             NameMod.RefreshNameModifiers(uid);
