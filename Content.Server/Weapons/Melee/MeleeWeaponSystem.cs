@@ -1,3 +1,4 @@
+using Content.Server._TBDStation.ServerKarma;
 using Content.Server.Chat.Systems;
 using Content.Server.CombatMode.Disarm;
 using Content.Server.Movement.Systems;
@@ -37,8 +38,10 @@ public sealed class MeleeWeaponSystem : SharedMeleeWeaponSystem
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
 
+
     public override void Initialize()
     {
+        serverRan = true;
         base.Initialize();
         SubscribeLocalEvent<MeleeSpeechComponent, MeleeHitEvent>(OnSpeechHit);
         SubscribeLocalEvent<MeleeWeaponComponent, DamageExamineEvent>(OnMeleeExamineDamage);

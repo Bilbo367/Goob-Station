@@ -1,6 +1,9 @@
 using Content.Server.Damage.Components;
 using Content.Server.Explosion.EntitySystems;
 using Content.Shared.Damage;
+using Robust.Shared.Network;
+using Content.Server._TBDStation.ServerKarma;
+using Robust.Shared.Player;
 
 namespace Content.Server.Damage.Systems;
 

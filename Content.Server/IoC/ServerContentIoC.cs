@@ -31,6 +31,8 @@ using Content.Shared.Kitchen;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Players.RateLimiting;
 using Content.Server._Goobstation.ServerCurrency; // Goobstation - Server Currency
+using Content.Server._TBDStation.ServerKarma;
+using Content.Server._TBDStation.SlurFilter; // TBDStation
 using Content.Server._Goobstation.Redial; // Goobstation - Redialing
 
 namespace Content.Server.IoC
@@ -83,6 +85,8 @@ namespace Content.Server.IoC
             IoCManager.Register<ServerCurrencyManager>(); // Goobstation - Server Currency
             IoCManager.Register<RedialManager>(); // Goobstation - Redialing
             IoCManager.Register<LinkAccountManager>(); // RMC - Patreon
+            IoCManager.Register<ServerKarmaManager>(); // TBDStation
+            IoCManager.Register<SlurFilterManager>(); // TBDStation
         }
     }
 }

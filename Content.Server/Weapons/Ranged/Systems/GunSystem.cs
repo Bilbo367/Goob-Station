@@ -23,6 +23,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using Robust.Shared.Containers;
 using Content.Shared._Lavaland.Weapons.Ranged.Events; // Lavaland Change
+using Content.Shared._TBDStation.ServerKarma.Events;
 
 namespace Content.Server.Weapons.Ranged.Systems;
 
@@ -234,6 +235,7 @@ public sealed partial class GunSystem : SharedGunSystem
                             {
                                 Logs.Add(LogType.HitScanHit,
                                     $"{ToPrettyString(user.Value):user} hit {hitName:target} using hitscan and dealt {dmg.GetTotal():damage} damage");
+                                RaiseLocalEvent(new PlayerKarmaHitEvent(dmg.GetTotal(), user.Value, hitEntity));
                             }
                             else
                             {
