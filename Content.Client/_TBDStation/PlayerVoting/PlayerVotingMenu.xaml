@@ -1,0 +1,18 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+               Title="{Loc 'player-voting-ui-window-name'}"
+               MinSize="250 300">
+    <BoxContainer Orientation="Vertical">
+        <BoxContainer Name="Main"
+                      VerticalExpand="True"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0 10">
+            <Button Name="GenerateButton"
+                    Text="{Loc 'anomaly-generator-generate'}"></Button>
+            <SpriteView Name="EntityView"
+                        SetSize="96 96"
+                        OverrideDirection="South" />
+        </BoxContainer>
+    </BoxContainer>
+</DefaultWindow>
