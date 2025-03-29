@@ -29,6 +29,7 @@ using Content.Shared.Lathe;
 using Content.Server.Research.Systems;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
+using Content.Server.Administration.Components;
 
 namespace Content.Server._TBDStation.ServerKarma
 {
@@ -128,6 +129,8 @@ namespace Content.Server._TBDStation.ServerKarma
             // TODO: renable
             // if (_players.PlayerCount < _goobcoinsMinPlayers)
             //     return;
+            if (ev.RoundDuration > TimeSpan.FromMinutes(10))
+                return;
 
             var query = EntityQueryEnumerator<MindContainerComponent>();
             var departmentProtos = _prototypeManager.EnumeratePrototypes<DepartmentPrototype>();
@@ -232,11 +235,13 @@ namespace Content.Server._TBDStation.ServerKarma
                 }
                 if (departments.Count != 0)
                     karma += jobSuccessKarma / departments.Count;
-
                 karma *= _karmaEndRoundMultiplier;
+                if (ev.RoundDuration > TimeSpan.FromMinutes(30))
+                    karma *= 0.6f; // Thirty minuate less karma change
+
                 _adminLogger.Add(LogType.Karma,
                 LogImpact.Medium,
-                $"{ToPrettyString(player.Item2):actor} end round gaining or lossing {(int) karma} karma");
+                $"end round {ToPrettyString(player.Item2):actor} gaining or lossing {(int) karma} karma");
                 _karmaMan.AddKarma(player.Item1, (int) karma);
             }
         }
@@ -268,14 +273,21 @@ namespace Content.Server._TBDStation.ServerKarma
 
         private void OnKarmaHit(PlayerKarmaHitEvent ev)
         {
+            if (ev.User == ev.Target) // Don't lose karma for hitting yourself
+                return;
+
             if (!_actors.TryGetSession(new EntityUid(ev.User), out ICommonSession? session))
                 return;
             if (session == null)
                 return;
             var netUserId = session.UserId;
+
+            if (HasComp<KillSignComponent>(new EntityUid(ev.Target)))
+                return; // Don't lose karma for hitting a person with the big RED KILL sign above them. Mayhaps we add karma.
+
             // Should not lose karma attacking someone you attacked
             // Should lose extra 3x karma if said person is crit and less 0.5x karma if their full health.
-            // Should not lose karma if you attack nukie, should lose karma if you unprovoked attack heratic/traitor unless they have killed someone.
+            // TODO: Should not lose karma if you attack nukie/wizard, should lose karma if you unprovoked attack heratic/traitor unless they have killed someone.
             var target = new EntityUid(ev.Target);
             if (_actors.TryGetSession(target, out ICommonSession? hitSession))
             {
@@ -286,10 +298,10 @@ namespace Content.Server._TBDStation.ServerKarma
                         delta *= 3;
                     else if (_mobStateSystem.IsDead(target)) // less if dead
                         delta *= 0.5f;
+
                     _adminLogger.Add(LogType.Karma,
                     LogImpact.Medium,
                     $"{ToPrettyString(new EntityUid(ev.User)):actor} hit {ToPrettyString(target):subject} lossing {(int) delta} karma");
-
                     _karmaMan.RemoveKarma(netUserId, (int) delta);
                 }
             }
